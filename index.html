@@ -786,7 +786,8 @@ function syncLiveScore(){
     pasapalabra:s.pasapalabra,
     puzzle:s.puzzle,
     quiz:s.quiz,
-    memory:s.memory||0
+    memory:s.memory||0,
+    memotest:s.memory||0
   };
   setLiveStatus("syncing","Enviando puntaje…");
   fetch(LIVE_RANKING_URL,{
