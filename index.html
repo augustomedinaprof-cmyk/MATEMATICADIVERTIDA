@@ -776,33 +776,63 @@ function saveRanking(){
 }
 function syncLiveScore(){
   if(!player || !hasLiveRankingUrl()) return;
+
   const s=player.scores;
-  const payload={
+  const callbackName=`liveScoreCallback_${Date.now()}_${Math.floor(Math.random()*100000)}`;
+  const script=document.createElement("script");
+  let finished=false;
+
+  const cleanup=()=>{
+    if(finished) return;
+    finished=true;
+    try{delete window[callbackName]}catch(e){window[callbackName]=undefined}
+    script.remove();
+  };
+
+  window[callbackName]=(data)=>{
+    if(data && data.ok){
+      liveRankingConnected=true;
+      setLiveStatus("online","EN VIVO");
+      setTimeout(()=>loadLiveRanking(false),350);
+    }else{
+      liveRankingConnected=false;
+      setLiveStatus("offline","Error al guardar");
+    }
+    cleanup();
+  };
+
+  script.onerror=()=>{
+    liveRankingConnected=false;
+    setLiveStatus("offline","Sin conexión");
+    cleanup();
+  };
+
+  const params=new URLSearchParams({
     action:"score",
     name:player.name,
     course:player.course,
-    total:totalScore(),
-    monopoly:s.monopoly,
-    pasapalabra:s.pasapalabra,
-    puzzle:s.puzzle,
-    quiz:s.quiz,
-    memory:s.memory||0,
-    memotest:s.memory||0
-  };
-  setLiveStatus("syncing","Enviando puntaje…");
-  fetch(LIVE_RANKING_URL,{
-    method:"POST",
-    mode:"no-cors",
-    headers:{"Content-Type":"text/plain;charset=utf-8"},
-    body:JSON.stringify(payload),
-    cache:"no-store"
-  }).then(()=>{
-    // Con no-cors no podemos leer el cuerpo, por eso confirmamos mediante la próxima lectura del ranking.
-    setTimeout(()=>loadLiveRanking(false),550);
-  }).catch(()=>{
-    liveRankingConnected=false;
-    setLiveStatus("offline","Sin conexión");
+    total:String(totalScore()),
+    monopoly:String(s.monopoly||0),
+    pasapalabra:String(s.pasapalabra||0),
+    puzzle:String(s.puzzle||0),
+    quiz:String(s.quiz||0),
+    memory:String(s.memory||0),
+    memotest:String(s.memory||0),
+    callback:callbackName,
+    _:String(Date.now())
   });
+
+  setLiveStatus("syncing","Enviando puntaje…");
+  script.src=`${LIVE_RANKING_URL}?${params.toString()}`;
+  document.body.appendChild(script);
+
+  setTimeout(()=>{
+    if(!finished){
+      liveRankingConnected=false;
+      setLiveStatus("offline","Sin respuesta");
+      cleanup();
+    }
+  },7000);
 }
 function renderRankingRows(ranks){
   const body=document.getElementById("rankingBody");
