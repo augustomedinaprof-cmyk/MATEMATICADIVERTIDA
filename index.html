@@ -130,12 +130,13 @@ button{cursor:pointer}
 .game-card.pasa{border-top:7px solid var(--azul)}
 .game-card.puzzle{border-top:7px solid var(--verde)}
 .game-card.quiz{border-top:7px solid var(--violeta)}
+.game-card.memory{border-top:7px solid #f28a2b}
 .score-panel{
   background:linear-gradient(135deg,#063c70,#0c5da5);
   color:white;border-radius:22px;padding:20px;margin:10px 0 35px;box-shadow:var(--sombra)
 }
 .score-panel h3{margin:0 0 10px}
-.score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.score-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
 .score-box{background:rgba(255,255,255,.12);border-radius:14px;padding:10px;text-align:center}
 .score-box small{opacity:.8;display:block;font-weight:700}
 .score-box b{font-size:1.22rem}
@@ -290,6 +291,46 @@ button{cursor:pointer}
 }
 .lifeline.used{text-decoration:line-through;opacity:.35;pointer-events:none}
 
+
+/* Memotest Matemático */
+.memory-panel{max-width:900px;margin:auto}
+.memory-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px
+}
+.memory-stat{
+  background:#f4f8fc;border:1px solid #dce9f4;border-radius:15px;padding:11px;text-align:center
+}
+.memory-stat small{display:block;color:#667b8f;font-weight:800}
+.memory-stat b{display:block;color:var(--azul);font-size:1.25rem;margin-top:3px}
+.memory-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0
+}
+.memory-card{
+  min-height:105px;border:2px solid #dfebf4;border-radius:17px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;
+  font-family:inherit;font-size:1.15rem;font-weight:900;line-height:1.15;
+  background:linear-gradient(135deg,#f28a2b,#e45c22);color:white;
+  box-shadow:0 6px 15px rgba(0,0,0,.08);transition:.18s ease
+}
+.memory-card:hover{transform:translateY(-2px);box-shadow:0 9px 18px rgba(0,0,0,.12)}
+.memory-card.revealed{
+  background:white;color:var(--azul);border-color:#bcd3e6;transform:none
+}
+.memory-card.matched{
+  background:#eaf8ef;color:#1c7840;border-color:#8bd3a3;cursor:default;transform:none
+}
+.memory-card:disabled{opacity:1}
+.memory-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+@media(max-width:650px){
+  .memory-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+  .memory-stats{grid-template-columns:1fr 1fr 1fr}
+  .memory-card{min-height:92px;font-size:1rem;padding:8px}
+}
+@media(max-width:420px){
+  .memory-grid{grid-template-columns:repeat(2,1fr)}
+  .memory-card{min-height:96px}
+}
+
 /* Ranking */
 .ranking{margin:10px 0 35px}
 .ranking table{width:100%;border-collapse:collapse}
@@ -371,9 +412,9 @@ button{cursor:pointer}
     </div>
 
     <div class="event-strip">
-      <div class="info-card"><strong>📅 Miércoles 26 de agosto</strong>Una mañana de desafíos matemáticos.</div>
+      <div class="info-card"><strong>🧠 Matemática Divertida</strong>Una mañana de juegos y desafíos matemáticos.</div>
       <div class="info-card"><strong>🕗 08:00 a 11:35 hs</strong>La muestra se desarrollará en el SUM.</div>
-      <div class="info-card"><strong>🎓 3° A y 3° D</strong>Alumnos responsables de los juegos.</div>
+      <div class="info-card"><strong>🎓 3° D</strong>Alumnos responsables de los juegos.</div>
     </div>
 
     <div class="login-card" id="loginBox">
@@ -385,7 +426,7 @@ button{cursor:pointer}
         </div>
         <div class="field">
           <label>Curso</label>
-          <input id="playerCourse" maxlength="15" placeholder="Ej.: 2° B">
+          <input id="playerCourse" value="3° D" readonly aria-readonly="true">
         </div>
         <button class="btn btn-primary" onclick="startPlayer()">COMENZAR</button>
       </div>
@@ -400,6 +441,7 @@ button{cursor:pointer}
           <div class="score-box"><small>Pasapalabra</small><b id="scorePasa">0</b></div>
           <div class="score-box"><small>Rompecabezas</small><b id="scorePuzzle">0</b></div>
           <div class="score-box"><small>¿Quién quiere...?</small><b id="scoreQuiz">0</b></div>
+          <div class="score-box"><small>Memotest</small><b id="scoreMemory">0</b></div>
           <div class="score-box"><small>TOTAL</small><b id="scoreTotal">0</b></div>
         </div>
       </div>
@@ -434,6 +476,12 @@ button{cursor:pointer}
           <p>Respondé preguntas de opción múltiple, usá tus comodines y avanzá por la escala de premios.</p>
           <button class="btn btn-purple" onclick="openGame('quiz')">JUGAR</button>
         </article>
+        <article class="game-card memory">
+          <div class="emoji">🧠🃏➗</div>
+          <h3>Memotest Matemático</h3>
+          <p>Encontrá las parejas entre una operación, expresión o concepto matemático y su resultado equivalente.</p>
+          <button class="btn btn-orange" style="background:#f28a2b;color:white" onclick="openGame('memory')">JUGAR</button>
+        </article>
       </div>
 
       <div class="panel ranking">
@@ -453,7 +501,7 @@ button{cursor:pointer}
     </div>
 
     <div class="footer">
-      <b>Profesores a cargo:</b> Medina Alan Augusto · Ataliva María Rosa<br>
+      <b>Profesor a cargo:</b> Medina Alan Augusto<br>
       Instituto Privado Rivadavia · Alderetes - Tucumán
     </div>
   </div>
@@ -567,6 +615,32 @@ button{cursor:pointer}
     </div>
   </div>
 </section>
+
+<section id="memory" class="screen game-screen hidden">
+  <div class="container">
+    <div class="game-header">
+      <button class="btn btn-ghost" onclick="showHome()">← Volver</button>
+      <h2>🧠 Memotest Matemático</h2><div class="spacer"></div>
+      <span class="chip">Puntos: <span id="memoryPoints">0</span></span>
+    </div>
+    <div class="panel memory-panel">
+      <div class="notice">🃏 Encontrá cada expresión matemática y su resultado o forma equivalente. Cada pareja correcta suma puntos.</div>
+
+      <div class="memory-stats">
+        <div class="memory-stat"><small>Parejas</small><b><span id="memoryMatches">0</span>/8</b></div>
+        <div class="memory-stat"><small>Intentos</small><b id="memoryAttempts">0</b></div>
+        <div class="memory-stat"><small>Puntos de partida</small><b id="memoryRoundPoints">0</b></div>
+      </div>
+
+      <div class="memory-grid" id="memoryGrid"></div>
+
+      <div class="memory-actions">
+        <button class="btn btn-primary" onclick="resetMemory()">🔄 Reiniciar Memotest</button>
+      </div>
+      <div id="memoryMsg"></div>
+    </div>
+  </div>
+</section>
 </main>
 
 <div id="questionModal" class="modal-wrap hidden">
@@ -587,7 +661,7 @@ let liveRankingConnected = false;
 let liveRankingTimer = null;
 let liveRankingRequestId = 0;
 
-const SCREENS = ["home","monopoly","pasapalabra","puzzle","quiz"];
+const SCREENS = ["home","monopoly","pasapalabra","puzzle","quiz","memory"];
 let player = null;
 
 function normalizeText(s){
@@ -630,15 +704,16 @@ function openGame(id){
   if(id==="pasapalabra") renderRosco();
   if(id==="puzzle" && puzzleOrder.length===0) initPuzzle();
   if(id==="quiz") renderQuiz();
+  if(id==="memory") { if(memoryDeck.length===0 || memoryCompleted) resetMemory(); else renderMemory(); }
 }
 function startPlayer(){
   const name=document.getElementById("playerName").value.trim();
-  const course=document.getElementById("playerCourse").value.trim();
+  const course="3° D";
   const msg=document.getElementById("loginMsg");
   if(name.length<2 || course.length<1){
     msg.innerHTML='<div class="message bad">Completá tu nombre y tu curso para comenzar.</div>';return;
   }
-  player={name,course,scores:{monopoly:0,pasapalabra:0,puzzle:0,quiz:0}};
+  player={name,course,scores:{monopoly:0,pasapalabra:0,puzzle:0,quiz:0,memory:0}};
   document.getElementById("loginBox").classList.add("hidden");
   document.getElementById("playingArea").classList.remove("hidden");
   document.getElementById("playerDisplay").textContent=`${name} (${course})`;
@@ -669,17 +744,19 @@ function setLiveStatus(state,text){
   label.textContent=text;
 }
 function updateScores(){
-  const s=player?.scores||{monopoly:0,pasapalabra:0,puzzle:0,quiz:0};
+  const s=player?.scores||{monopoly:0,pasapalabra:0,puzzle:0,quiz:0,memory:0};
   document.getElementById("scoreMono").textContent=s.monopoly;
   document.getElementById("scorePasa").textContent=s.pasapalabra;
   document.getElementById("scorePuzzle").textContent=s.puzzle;
   document.getElementById("scoreQuiz").textContent=s.quiz;
+  document.getElementById("scoreMemory").textContent=s.memory||0;
   document.getElementById("scoreTotal").textContent=totalScore();
   document.getElementById("topScore").textContent=totalScore();
   document.getElementById("monoPoints").textContent=s.monopoly;
   document.getElementById("pasaPoints").textContent=s.pasapalabra;
   document.getElementById("puzzlePoints").textContent=s.puzzle;
   document.getElementById("quizPoints").textContent=s.quiz;
+  document.getElementById("memoryPoints").textContent=s.memory||0;
   if(!liveRankingConnected) renderLocalRanking();
 }
 function saveRanking(){
@@ -708,7 +785,8 @@ function syncLiveScore(){
     monopoly:s.monopoly,
     pasapalabra:s.pasapalabra,
     puzzle:s.puzzle,
-    quiz:s.quiz
+    quiz:s.quiz,
+    memory:s.memory||0
   };
   setLiveStatus("syncing","Enviando puntaje…");
   fetch(LIVE_RANKING_URL,{
@@ -728,6 +806,10 @@ function syncLiveScore(){
 function renderRankingRows(ranks){
   const body=document.getElementById("rankingBody");
   if(!body) return;
+  ranks=(Array.isArray(ranks)?ranks:[]).filter(r=>{
+    const c=normalizeText(r.course||"").replace(/º/g,"°").replace(/\s+/g,"");
+    return c==="3°d" || c==="3d";
+  });
   body.innerHTML=ranks.length?ranks.slice(0,20).map((r,i)=>{
     const medal=i===0?"🥇":i===1?"🥈":i===2?"🥉":String(i+1);
     return `<tr><td>${medal}</td><td>${escapeHTML(r.name||"")}</td><td>${escapeHTML(r.course||"")}</td><td>${Number(r.points||r.total||0)}</td></tr>`;
@@ -1154,7 +1236,139 @@ function useTeacher(){
     `<div class="message neutral">🎓 Pista del profesor: ${quizData[quizIndex].h}</div>`;
 }
 
+
+/* ================= MEMOTEST MATEMÁTICO ================= */
+const memoryPairs=[
+  {id:1,a:"√49",b:"7"},
+  {id:2,a:"3²",b:"9"},
+  {id:3,a:"2 × 8",b:"16"},
+  {id:4,a:"1/2",b:"0,5"},
+  {id:5,a:"25%",b:"1/4"},
+  {id:6,a:"x + x",b:"2x"},
+  {id:7,a:"5²",b:"25"},
+  {id:8,a:"18 ÷ 3",b:"6"}
+];
+
+let memoryDeck=[];
+let memoryOpen=[];
+let memoryLocked=false;
+let memoryMatches=0;
+let memoryAttempts=0;
+let memoryRoundPoints=0;
+let memoryCompleted=false;
+
+function memoryShuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function resetMemory(){
+  memoryOpen=[];
+  memoryLocked=false;
+  memoryMatches=0;
+  memoryAttempts=0;
+  memoryRoundPoints=0;
+  memoryCompleted=false;
+
+  const cards=[];
+  memoryPairs.forEach(p=>{
+    cards.push({pair:p.id,text:p.a,uid:`${p.id}a`,revealed:false,matched:false});
+    cards.push({pair:p.id,text:p.b,uid:`${p.id}b`,revealed:false,matched:false});
+  });
+  memoryDeck=memoryShuffle(cards);
+
+  const msg=document.getElementById("memoryMsg");
+  if(msg) msg.innerHTML="";
+  renderMemory();
+}
+
+function renderMemory(){
+  const grid=document.getElementById("memoryGrid");
+  if(!grid) return;
+  if(memoryDeck.length===0){
+    resetMemory();
+    return;
+  }
+
+  grid.innerHTML=memoryDeck.map((card,i)=>{
+    const visible=card.revealed || card.matched;
+    const cls=card.matched?"matched":(card.revealed?"revealed":"");
+    const label=visible ? escapeHTML(card.text) : "?";
+    return `<button type="button" class="memory-card ${cls}" onclick="flipMemory(${i})" ${card.matched?"disabled":""}>${label}</button>`;
+  }).join("");
+
+  const matches=document.getElementById("memoryMatches");
+  const attempts=document.getElementById("memoryAttempts");
+  const points=document.getElementById("memoryRoundPoints");
+  if(matches) matches.textContent=memoryMatches;
+  if(attempts) attempts.textContent=memoryAttempts;
+  if(points) points.textContent=memoryRoundPoints;
+}
+
+function flipMemory(index){
+  if(memoryLocked || memoryCompleted) return;
+  const card=memoryDeck[index];
+  if(!card || card.matched || card.revealed) return;
+
+  card.revealed=true;
+  memoryOpen.push(index);
+  renderMemory();
+
+  if(memoryOpen.length<2) return;
+
+  memoryAttempts++;
+  const firstIndex=memoryOpen[0];
+  const secondIndex=memoryOpen[1];
+  const first=memoryDeck[firstIndex];
+  const second=memoryDeck[secondIndex];
+
+  if(first.pair===second.pair){
+    first.matched=true;
+    second.matched=true;
+    memoryMatches++;
+    memoryRoundPoints+=150;
+    memoryOpen=[];
+    addScore("memory",150);
+    renderMemory();
+
+    const msg=document.getElementById("memoryMsg");
+    if(msg) msg.innerHTML='<div class="message good">✅ ¡Pareja correcta! +150 puntos.</div>';
+
+    if(memoryMatches===memoryPairs.length){
+      memoryCompleted=true;
+      const extra=Math.max(0,600-(memoryAttempts-memoryPairs.length)*40);
+      if(extra>0){
+        memoryRoundPoints+=extra;
+        addScore("memory",extra);
+      }
+      renderMemory();
+      confetti(140);
+      if(msg){
+        msg.innerHTML=`<div class="message good">🎉 ¡Completaste el Memotest! ${extra>0?`Bonus por precisión: +${extra} puntos. `:""}Total de esta partida: <b>${memoryRoundPoints} puntos</b>.</div>`;
+      }
+    }
+    return;
+  }
+
+  memoryLocked=true;
+  const msg=document.getElementById("memoryMsg");
+  if(msg) msg.innerHTML='<div class="message neutral">🔄 No forman pareja. Volvé a intentar.</div>';
+
+  setTimeout(()=>{
+    first.revealed=false;
+    second.revealed=false;
+    memoryOpen=[];
+    memoryLocked=false;
+    renderMemory();
+  },900);
+}
+
 /* Inicio */
+resetMemory();
 resetPasa();
 resetQuiz();
 renderBoard();
